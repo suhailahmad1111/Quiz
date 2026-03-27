@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>My Photo Story | Suhail Ahmad</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; background: #faf7f0; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; background: #1e2a32; padding: 12px 18px; }
+    .insta-link { color: white; text-decoration: none; background: #e4405f20; padding: 6px 14px; border-radius: 40px; }
+    .login-btn { background: #1877f2; border: none; padding: 8px 20px; border-radius: 40px; color: white; cursor: pointer; }
+    .about-section { background: white; border-radius: 24px; padding: 1.5rem; margin: 20px 16px; }
+    .about-title { font-size: 1.5rem; color: #1877f2; border-left: 4px solid #1877f2; padding-left: 14px; }
+    .about-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+    .profile-photo { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #1877f2; }
+    .about-stats { display: flex; justify-content: center; gap: 1.5rem; margin-top: 12px; }
+    .stat-number { font-size: 1.3rem; font-weight: 800; color: #1877f2; }
+    .container { padding: 0 16px 80px 16px; }
+    .photo-card { background: white; border-radius: 20px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .photo-card img { width: 100%; max-height: 450px; object-fit: cover; }
+    .photo-info { padding: 14px 16px 18px; }
+    .caption { font-size: 0.75rem; color: #6c757d; margin-bottom: 8px; }
+    .photo-title { font-size: 1.2rem; margin: 6px 0 8px; color: #1e466e; }
+    .photo-desc { color: #3a4a5f; line-height: 1.5; font-size: 0.9rem; }
+    .quiz-floating-btn { position: fixed; bottom: 20px; right: 20px; background: #1877f2; color: white; border: none; padding: 14px 24px; border-radius: 50px; font-size: 1rem; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.25); z-index: 100; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .quiz-modal { background: white; width: 94%; max-width: 550px; height: 85%; border-radius: 28px; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-header { padding: 16px 18px; background: #1e2a32; color: white; display: flex; justify-content: space-between; }
+    .close-modal { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+    .modal-body { flex: 1; overflow-y: auto; padding: 16px; }
+    .user-name-section { background: #f8f9fa; padding: 12px; border-radius: 20px; margin-bottom: 20px; }
+    .user-name-section input { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 50px; }
+    .quiz-card { background: white; border: 1px solid #e9ecef; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
+    .quiz-card.submitted { border-left: 5px solid #27ae60; background: #f0fff4; }
+    .quiz-question { font-weight: 600; margin-bottom: 14px; }
+    .quiz-options { display: flex; gap: 20px; margin: 12px 0; flex-wrap: wrap; }
+    .quiz-options label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .submit-quiz { background: #1877f2; color: white; border: none; padding: 10px 20px; border-radius: 50px; width: 100%; cursor: pointer; margin-top: 12px; }
+    .submit-quiz:disabled { background: #adb5bd; cursor: not-allowed; }
+    .quiz-status { font-size: 0.7rem; margin-top: 8px; display: inline-block; padding: 4px 12px; border-radius: 20px; }
+    .status-submitted { background: #27ae60; color: white; }
+    footer { background: #1e2a32; color: white; padding: 2rem 18px; margin-top: 20px; }
+    .footer-content { display: flex; flex-direction: column; gap: 1.5rem; }
+    .footer-section h3 { color: #4d9eff; margin-bottom: 10px; }
+    .social-links { display: flex; gap: 12px; margin-top: 10px; }
+    .social-link { background: #1877f2; width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: white; text-decoration: none; }
+    .newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; }
+    .newsletter-form input { flex: 1; padding: 10px; border-radius: 50px; border: none; }
+    .subscribe-btn { background: #1877f2; border: none; padding: 10px 18px; border-radius: 50px; color: white; cursor: pointer; }
+    .copyright { text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #3a4a5a; font-size: 0.7rem; }
+    .toast-msg { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1e2a32; color: white; padding: 10px 20px; border-radius: 50px; z-index: 1100; }
+  </style>
+</head>
+<body>
+
+<header class="main-header">
+  <a href="#" class="insta-link"><i class="fab fa-instagram"></i> suhail_ahmad111</a>
+  <button class="login-btn" id="demoLoginBtn">Login</button>
+</header>
+
+<section class="about-section">
+  <h2 class="about-title">✨ About Me</h2>
+  <div class="about-content">
+    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/e08cdf98-4a77-44c4-8da5-68dcc58bf736.jpg" class="profile-photo">
+    <div class="about-details">
+      <h3>Suhail Ahmad</h3>
+      <p>🌟 Web Developer | Designer | Content Creator</p>
+      <div class="about-stats">
+        <div><div class="stat-number">50+</div><div>Projects</div></div>
+        <div><div class="stat-number">100+</div><div>Clients</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="photo-card">
+    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/e9e435e2-cc07-4443-85ea-6930fb5bde7a.jpg">
+    <div class="photo-info">
+      <div class="caption">🌙 12 March, 22:23</div>
+      <h3 class="photo-title">☀️ Solar Energy</h3>
+      <p class="photo-desc">Solar panels convert sunlight into electricity. Clean & renewable.</p>
+    </div>
+  </div>
+  
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+  
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+  
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    
+   <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+    <!--
+  <div class="photo-card">
+  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <div class="photo-info">
+    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
+    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
+    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+  </div>
+</div>
+  -->
+  
+  
+  <div class="photo-card">
+    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/84928f90-728f-41bd-8d50-2c4621745572.jpg">
+    <div class="photo-info">
+      <div class="caption">🏛️ National Inter College</div>
+      <h3 class="photo-title">🎓 College Days</h3>
+      <p class="photo-desc">"In college halls we learn and earn dreams."</p>
+    </div>
+  </div>
+  <div class="photo-card">
+    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/4d1930fc-95f6-4fec-97f5-98d30bb3ad19.jpg">
+    <div class="photo-info">
+      <div class="caption">🎨 Textile Color Chart</div>
+      <h3 class="photo-title">🌈 Color Chart</h3>
+      <p class="photo-desc">टेक्सटाइल उद्योग में कलर चार्ट महत्वपूर्ण है।</p>
+    </div>
+  </div>
+</div>
+
+<button class="quiz-floating-btn" id="openQuizBtn" onclick="openQuizModal()">
+  <i class="fas fa-question-circle"></i> Take Quiz
+</button>
+
+<div class="modal-overlay" id="quizModal">
+  <div class="quiz-modal">
+    <div class="modal-header">
+      <h2><i class="fas fa-puzzle-piece"></i> Quizzes</h2>
+      <button class="close-modal" id="closeModalBtn" onclick="closeQuizModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="user-name-section">
+        <label>👤 Aapka Naam</label>
+        <input type="text" id="globalUserName" placeholder="Apna naam likhein">
+      </div>
+      
+      <div class="quiz-card" data-quiz-id="solarQuiz">
+        <div class="quiz-question">☀️ क्या सूरज की रोशनी से दुनिया की सारी एनर्जी पूरी हो सकती है?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="solarQuiz" value="Yes"> ✅ हाँ</label>
+          <label><input type="radio" name="solarQuiz" value="No"> ❌ नहीं</label>
+        </div>
+        <button class="submit-quiz">📥 Submit</button>
+        <div class="quiz-status"></div>
+      </div>
+
+      <div class="quiz-card" data-quiz-id="collegeQuiz">
+        <div class="quiz-question">🏛️ क्या आपको कॉलेज जाने का मौका मिला?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="collegeQuiz" value="Yes"> ✅ हाँ</label>
+          <label><input type="radio" name="collegeQuiz" value="No"> ❌ नहीं</label>
+        </div>
+        <button class="submit-quiz">📥 Submit</button>
+        <div class="quiz-status"></div>
+      </div>
+
+
+<!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->
+       <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        --> 
+      <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->  
+     <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->   
+<!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->
+<!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->
+      <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->  
+      <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->  
+       <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        --> 
+      <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->  
+      <!--
+         <div class="quiz-card" data-quiz-id="apnaQuizId">
+  <div class="quiz-question">❓ आपका सवाल?</div>
+  <div class="quiz-options">
+    <label><input type="radio" name="apnaQuizId" value="Yes"> ✅ हाँ</label>
+    <label><input type="radio" name="apnaQuizId" value="No"> ❌ नहीं</label>
+  </div>
+  <button class="submit-quiz">📥 Submit</button>
+  <div class="quiz-status"></div>
+</div> 
+        -->  
+        
+      <div class="quiz-card" data-quiz-id="colorQuiz">
+        <div class="quiz-question">👁️ क्या इंसान की आँख 10 लाख रंग पहचान सकती है?</div>
+        <div class="quiz-options">
+          <label><input type="radio" name="colorQuiz" value="Yes"> ✅ हाँ</label>
+          <label><input type="radio" name="colorQuiz" value="No"> ❌ नहीं</label>
+        </div>
+        <button class="submit-quiz">📥 Submit</button>
+        <div class="quiz-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>Suhail Ahmad</h3>
+      <p>Creative storyteller & web developer.</p>
+      <div class="social-links">
+        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-section">
+      <h3>Contact</h3>
+      <p>📧 suhail@photostory.com</p>
+    </div>
+    <div class="footer-section">
+      <h3>Newsletter</h3>
+      <form id="newsletterForm">
+        <input type="email" id="newsEmail" placeholder="Your email">
+        <button type="submit" class="subscribe-btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+  <div class="copyright">© 2025 Suhail Ahmad | Made with ❤️ in India</div>
+</footer>
+
+<script>
+  // Modal functions - Firebase se pehle
+  function openQuizModal() {
+    var modal = document.getElementById('quiz
