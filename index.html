@@ -57,7 +57,7 @@
 <body>
 
 <header class="main-header">
-  <a href="#" class="insta-link"><i class="fab fa-instagram"></i> suhail_ahmad111</a>
+  <a href="https://www.instagram.com/suhail_ahmad111?igsh=M2dqaXg0NXRpcG1m" class="insta-link"><i class="fab fa-instagram"></i> suhail_ahmad111</a>
   <button class="login-btn" id="demoLoginBtn">Login</button>
 </header>
 
@@ -66,11 +66,11 @@
   <div class="about-content">
     <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/e08cdf98-4a77-44c4-8da5-68dcc58bf736.jpg" class="profile-photo">
     <div class="about-details">
-      <h3>Suhail Ahmad</h3>
-      <p>🌟 Web Developer | Designer | Content Creator</p>
+      <h3>SUHAIL AHMAD.</h3>
+      <p>🌟 Manufacture clothes  | Designer | Content Creator</p>
       <div class="about-stats">
-        <div><div class="stat-number">50+</div><div>Projects</div></div>
-        <div><div class="stat-number">100+</div><div>Clients</div></div>
+        <div><div class="stat-number">100+</div><div>Projects</div></div>
+        <div><div class="stat-number">50+</div><div>Clients</div></div>
       </div>
     </div>
   </div>
@@ -261,8 +261,8 @@
     </div>
     <div class="modal-body">
       <div class="user-name-section">
-        <label>👤 Aapka Naam</label>
-        <input type="text" id="globalUserName" placeholder="Apna naam likhein">
+        <label>👤 आपका नाम.</label>
+        <input type="text" id="globalUserName" placeholder="Enter your name here.">
       </div>
       
       <div class="quiz-card" data-quiz-id="solarQuiz">
@@ -425,15 +425,15 @@
   <div class="footer-content">
     <div class="footer-section">
       <h3>Suhail Ahmad</h3>
-      <p>Creative storyteller & web developer.</p>
+      <p>Manufacture clothes, A worker and a seller.</p>
       <div class="social-links">
-        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.instagram.com/suhail_ahmad111?igsh=M2dqaXg0NXRpcG1m" class="social-link"><i class="fab fa-instagram"></i></a>
         <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
     <div class="footer-section">
       <h3>Contact</h3>
-      <p>📧 suhail@photostory.com</p>
+      <p>📧 suhailahmad1111india@gmail.com</p>
     </div>
     <div class="footer-section">
       <h3>Newsletter</h3>
@@ -443,110 +443,4 @@
       </form>
     </div>
   </div>
-  <div class="copyright">© 2025 Suhail Ahmad | Made with ❤️ in India</div>
-</footer>
-
-<script>
-  // Modal functions - Firebase se pehle
-  function openQuizModal() {
-    var modal = document.getElementById('quizModal');
-    if(modal) modal.classList.add('active');
-  }
-  function closeQuizModal() {
-    var modal = document.getElementById('quizModal');
-    if(modal) modal.classList.remove('active');
-  }
-</script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getFirestore, collection, doc, setDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAu3RrV2qm3JScFP258Uq3JDLKNCRnm17Q",
-    authDomain: "suhail-photo-story.firebaseapp.com",
-    projectId: "suhail-photo-story",
-    storageBucket: "suhail-photo-story.firebasestorage.app",
-    messagingSenderId: "17656554594",
-    appId: "1:17656554594:web:366a231570f41bc63b9d3b",
-    measurementId: "G-XEJZJJ50XP"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  function showToast(msg, isError = false) {
-    let old = document.querySelector('.toast-msg');
-    if(old) old.remove();
-    let toast = document.createElement('div');
-    toast.className = 'toast-msg';
-    toast.innerText = msg;
-    toast.style.background = isError ? '#c0392b' : '#1e2a32';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
-
-  // Submit Quiz Function - Ek user ka ek hi document
-  async function submitQuiz(button) {
-    const card = button.closest('.quiz-card');
-    const quizId = card.getAttribute('data-quiz-id');
-    const userName = document.getElementById('globalUserName').value.trim();
-    const selectedRadio = card.querySelector('input[type="radio"]:checked');
-    
-    if(!userName) { 
-      showToast("⚠️ पहले अपना नाम लिखें", true); 
-      return; 
-    }
-    if(!selectedRadio) { 
-      showToast("🤔 कोई उत्तर चुनें", true); 
-      return; 
-    }
-    
-    const answer = selectedRadio.value;
-    
-    try {
-      const docId = userName.replace(/\s/g, '_');
-      const userDocRef = doc(db, "quizData", docId);
-      const userDoc = await getDoc(userDocRef);
-      
-      if(userDoc.exists()) {
-        await updateDoc(userDocRef, {
-          [quizId]: answer,
-          lastUpdated: new Date().toISOString()
-        });
-        showToast(`🙏 धन्यवाद ${userName}! "${quizId}" अपडेट हो गया।`);
-      } else {
-        const userData = {
-          userName: userName,
-          [quizId]: answer,
-          createdAt: new Date().toISOString(),
-          lastUpdated: new Date().toISOString()
-        };
-        await setDoc(userDocRef, userData);
-        showToast(`🙏 धन्यवाद ${userName}! पहला जवाब सेव हुआ।`);
-      }
-      
-      card.classList.add('submitted');
-      const statusDiv = card.querySelector('.quiz-status');
-      statusDiv.innerHTML = '<span class="status-submitted">✅ Submitted</span>';
-      button.disabled = true;
-      card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
-      
-    } catch(e) {
-      console.error("Firebase error:", e);
-      showToast("❌ Error: " + e.message, true);
-    }
-  }
-
-  document.querySelectorAll('.submit-quiz').forEach(btn => {
-    btn.onclick = () => submitQuiz(btn);
-  });
-
-  document.getElementById('demoLoginBtn').onclick = () => showToast("🔐 Welcome!");
-  document.getElementById('newsletterForm').onsubmit = (e) => {
-    e.preventDefault();
-    showToast("✅ Subscribed!");
-  };
-</script>
-</body>
-</html>
+  <div class="copyright">© 2025 Suhail Ahmad | Made with ❤️ 
