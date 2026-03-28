@@ -443,4 +443,110 @@
       </form>
     </div>
   </div>
-  <div class="copyright">© 2025 Suhail Ahmad | Made with ❤️ 
+  <div class="copyright">© 2025 Suhail Ahmad | Made with ❤️ in India.</div>
+</footer>
+
+<script>
+  // Modal functions - Firebase se pehle
+  function openQuizModal() {
+    var modal = document.getElementById('quizModal');
+    if(modal) modal.classList.add('active');
+  }
+  function closeQuizModal() {
+    var modal = document.getElementById('quizModal');
+    if(modal) modal.classList.remove('active');
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAu3RrV2qm3JScFP258Uq3JDLKNCRnm17Q",
+    authDomain: "suhail-photo-story.firebaseapp.com",
+    projectId: "suhail-photo-story",
+    storageBucket: "suhail-photo-story.firebasestorage.app",
+    messagingSenderId: "17656554594",
+    appId: "1:17656554594:web:366a231570f41bc63b9d3b",
+    measurementId: "G-XEJZJJ50XP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function showToast(msg, isError = false) {
+    let old = document.querySelector('.toast-msg');
+    if(old) old.remove();
+    let toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerText = msg;
+    toast.style.background = isError ? '#c0392b' : '#1e2a32';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Submit Quiz Function - Ek user ka ek hi document
+  async function submitQuiz(button) {
+    const card = button.closest('.quiz-card');
+    const quizId = card.getAttribute('data-quiz-id');
+    const userName = document.getElementById('globalUserName').value.trim();
+    const selectedRadio = card.querySelector('input[type="radio"]:checked');
+    
+    if(!userName) { 
+      showToast("⚠️ पहले अपना नाम लिखें", true); 
+      return; 
+    }
+    if(!selectedRadio) { 
+      showToast("🤔 कोई उत्तर चुनें", true); 
+      return; 
+    }
+    
+    const answer = selectedRadio.value;
+    
+    try {
+      const docId = userName.replace(/\s/g, '_');
+      const userDocRef = doc(db, "quizData", docId);
+      const userDoc = await getDoc(userDocRef);
+      
+      if(userDoc.exists()) {
+        await updateDoc(userDocRef, {
+          [quizId]: answer,
+          lastUpdated: new Date().toISOString()
+        });
+        showToast(`🙏 धन्यवाद ${userName}! "${quizId}" अपडेट हो गया।`);
+      } else {
+        const userData = {
+          userName: userName,
+          [quizId]: answer,
+          createdAt: new Date().toISOString(),
+          lastUpdated: new Date().toISOString()
+        };
+        await setDoc(userDocRef, userData);
+        showToast(`🙏 धन्यवाद ${userName}! पहला जवाब सेव हुआ।`);
+      }
+      
+      card.classList.add('submitted');
+      const statusDiv = card.querySelector('.quiz-status');
+      statusDiv.innerHTML = '<span class="status-submitted">✅ Submitted</span>';
+      button.disabled = true;
+      card.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+      
+    } catch(e) {
+      console.error("Firebase error:", e);
+      showToast("❌ Error: " + e.message, true);
+    }
+  }
+
+  document.querySelectorAll('.submit-quiz').forEach(btn => {
+    btn.onclick = () => submitQuiz(btn);
+  });
+
+  document.getElementById('demoLoginBtn').onclick = () => showToast("🔐 Welcome!");
+  document.getElementById('newsletterForm').onsubmit = (e) => {
+    e.preventDefault();
+    showToast("✅ Subscribed!");
+  };
+</script>
+</body>
+</html>
