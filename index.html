@@ -24,6 +24,29 @@
     .caption { font-size: 0.75rem; color: #6c757d; margin-bottom: 8px; }
     .photo-title { font-size: 1.2rem; margin: 6px 0 8px; color: #1e466e; }
     .photo-desc { color: #3a4a5f; line-height: 1.5; font-size: 0.9rem; }
+   /* Video card ke liye extra styling */
+.video-card {
+    cursor: default;
+}
+
+.video-wrapper {
+    margin-top: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.video-wrapper iframe {
+    display: block;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+/* Mobile ke liye */
+@media (max-width: 768px) {
+    .video-wrapper iframe {
+        height: auto;
+    }
+}
     .quiz-floating-btn { position: fixed; bottom: 20px; right: 20px; background: #1877f2; color: white; border: none; padding: 14px 24px; border-radius: 50px; font-size: 1rem; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.25); z-index: 100; display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
@@ -64,7 +87,7 @@
 <section class="about-section">
   <h2 class="about-title">✨ About Me</h2>
   <div class="about-content">
-    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/e08cdf98-4a77-44c4-8da5-68dcc58bf736.jpg" class="profile-photo">
+    <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/bd5c8265-8e96-4f0a-aec2-2c8b6243733f.jpg" class="profile-photo">
     <div class="about-details">
       <h3>SUHAIL AHMAD.</h3>
       <p>🌟 Manufacture clothes  | Designer | Content Creator</p>
@@ -85,17 +108,48 @@
       <p class="photo-desc">Solar panels convert sunlight into electricity. Clean & renewable.</p>
     </div>
   </div>
+  <!-- Video 1 -->
+<div class="photo-card video-card">
+    
+    <div class="video-wrapper">
+        <iframe width="100%" height="315" src="https://www.youtube.com/embed/u7vMlT3ZGKM?si=G6qNQqwubS5v6X_N" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="photo-info">
+        <div class="caption">🎬 15 March, 2026 listen_11</div>
+        <h3 class="photo-title">📹 travel related video.</h3>
+        <p class="photo-desc">How travel chang your life.</p>
+    </div>
+</div>
+
+  <!-- Video 1 -->
+  <!--
+<div class="photo-card video-card">
+    
+    <div class="video-wrapper">
+        <iframe width="100%" height="315" src="https://www.youtube.com/embed/u7vMlT3ZGKM?si=G6qNQqwubS5v6X_N" frameborder="0" allowfullscreen></iframe> </div>
+    <div class="photo-info">
+        <div class="caption">🎬 15 March, 2026</div>
+        <h3 class="photo-title">📹 Solar Energy Video</h3>
+        <p class="photo-desc">How solar panels work.</p>
+    </div>
+</div>
+-->
+
+
   
-    <!--
+  
+  
+    
   <div class="photo-card">
-  <img src="APNI_IMAGE_URL_YAHAN_DAALO" alt="photo description">
+  <img src="https://i.supaimg.com/e08da327-0f64-49ac-add6-b104f1c9de7f/60d1abb5-6b5d-4560-bd64-e48d2007ff39.jpg" alt="toys">
   <div class="photo-info">
-    <div class="caption"><i class="fas fa-icon"></i> आपका कैप्शन</div>
-    <h3 class="photo-title">📷 फोटो का टाइटल</h3>
-    <p class="photo-desc">यहाँ फोटो के बारे में विस्तार से लिखें। क्या दिख रहा है, कब लिया, क्या story है।</p>
+    <div class="caption"><i class="fas fa-icon"></i> random click at home.29 mar 2026</div>
+    <h3 class="photo-title">📷 🧸खिलौना</h3>
+    <p class="photo-desc">खिलौना बचपन की खुशियों का सबसे प्यारा साथी होता है,
+जो बिना बोले भी दिल को हँसाना जानता है।।</p>
   </div>
 </div>
-  -->
+  
   
     <!--
   <div class="photo-card">
@@ -266,7 +320,7 @@
       </div>
       
       <div class="quiz-card" data-quiz-id="solarQuiz">
-        <div class="quiz-question">☀️ क्या सूरज की रोशनी से दुनिया की सारी एनर्जी पूरी हो सकती है?</div>
+        <div class="quiz-question">☀️"क्या आप जानते हैं कि सूरज की रोशनी से दुनिया की सारी ऊर्जा की जरूरतें पूरी हो सकती है?”</div>
         <div class="quiz-options">
           <label><input type="radio" name="solarQuiz" value="Yes"> ✅ हाँ</label>
           <label><input type="radio" name="solarQuiz" value="No"> ❌ नहीं</label>
@@ -409,7 +463,7 @@
         -->  
         
       <div class="quiz-card" data-quiz-id="colorQuiz">
-        <div class="quiz-question">👁️ क्या इंसान की आँख 10 लाख रंग पहचान सकती है?</div>
+        <div class="quiz-question">👁"क्या आप जानते हैं कि इंसान की आँख लगभग 10 लाख रंग पहचान सकती ?”?</div>
         <div class="quiz-options">
           <label><input type="radio" name="colorQuiz" value="Yes"> ✅ हाँ</label>
           <label><input type="radio" name="colorQuiz" value="No"> ❌ नहीं</label>
